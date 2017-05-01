@@ -83,6 +83,17 @@ infer:forward(img)
 -- get top propsals
 local masks,_ = infer:getTopProps(.2,h,w)
 
+full_mask = masks[1]:clone():zero()
+print(masks:size(1))
+for i = 1,masks:size(1) do
+  image.save(string.format('./mask_%d.jpg', i), masks[i]:mul(255))
+  -- full_mask:add(masks[i])
+end
+
+local f = assert(io.open("num_masks", "w"))
+f:write(string.format("%d\n", masks:size(1)))
+f:close()
+
 -- save result
 local res = img:clone()
 maskApi.drawMasks(res, masks, 10)
